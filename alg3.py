@@ -37,7 +37,7 @@ def generate_random_array(n):
 
 def measure_running_time(algorithm, arr, i):
     start_time = time.time()
-    result = algorithm(arr.copy(), i)
+    result = algorithm(arr.copy(), 0, len(arr) - 1, i)
     end_time = time.time()
     running_time = (end_time - start_time) * 1000  # Convert to milliseconds
     return result, running_time
