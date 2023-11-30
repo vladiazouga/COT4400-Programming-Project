@@ -1,40 +1,45 @@
 import random
 import time
 
-def partition(arr, p, r):
-    x = arr[r]
-    i = p - 1
+# Function to partition the array
+def partition(arr, low, high):
+    pivot = arr[high]
+    i = low - 1
 
-    for j in range(p, r):
-        if arr[j] <= x:
+    for j in range(low, high):
+        if arr[j] <= pivot:
             i += 1
             arr[i], arr[j] = arr[j], arr[i]
 
-    arr[i + 1], arr[r] = arr[r], arr[i + 1]
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
     return i + 1
 
-def randomized_partition(arr, p, r):
-    i = random.randint(p, r)
-    arr[r], arr[i] = arr[i], arr[r]
-    return partition(arr, p, r)
+# Function for randomized partitioning
+def randomized_partition(arr, low, high):
+    random_index = random.randint(low, high)
+    arr[high], arr[random_index] = arr[random_index], arr[high]
+    return partition(arr, low, high)
 
-def randomized_select(arr, p, r, i):
-    if p == r:
-        return arr[p]
+# Function for randomized selection
+def randomized_select(arr, low, high, i):
+    if low == high:
+        return arr[low]
 
-    q = randomized_partition(arr, p, r)
-    k = q - p + 1
+    pivot_index = randomized_partition(arr, low, high)
+    k = pivot_index - low + 1
 
     if i == k:
-        return arr[q]
+        return arr[pivot_index]
     elif i < k:
-        return randomized_select(arr, p, q - 1, i)
+        return randomized_select(arr, low, pivot_index - 1, i)
     else:
-        return randomized_select(arr, q + 1, r, i - k)
+        return randomized_select(arr, pivot_index + 1, high, i - k)
 
+# Function to generate a random array
 def generate_random_array(n):
     return [random.randint(1, 1000) for _ in range(n)]
 
+# Function to measure the running time of the algorithm
 def measure_running_time(algorithm, arr, i):
     start_time = time.time()
     result = algorithm(arr.copy(), 0, len(arr) - 1, i)
@@ -48,8 +53,9 @@ iterations = 5
 i_value = int(2 * len(input_sizes) / 3)
 
 # Results table header
-print("n\tTheoreticalRT\tEmpiricalRT (ms)\tRatio\tPredictedRT")
+print("n\tTheoretical RT\tEmpirical RT (ms)\tRatio\tPredicted RT")
 
+# Loop through each input size
 for n in input_sizes:
     theoretical_running_time = n
 
@@ -75,4 +81,4 @@ for n in input_sizes:
     average_empirical_running_time = total_empirical_running_time / iterations
 
     # Format the output for better readability
-    print(f"{n}\t{theoretical_running_time:.2f}\t\t{average_empirical_running_time:.2f}\t\t{c1:.8f}\t{predicted_running_time:.2f}")
+    print(f"{n}\t{theoretical_running_time}\t\t{average_empirical_running_time:.2f}\t\t{c1:.8f}\t{predicted_running_time:.2f}")
